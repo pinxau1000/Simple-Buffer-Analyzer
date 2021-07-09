@@ -1,4 +1,4 @@
-# Simple Buffer Analuzer Tool
+# Simple Buffer Analyzer Tool
 
 ## Requirements
 - Python version 2.7, 3.6, 3.7, 3.8 or 3.9. A compatible python version is required. To download and install python go ahead to [python downloads](https://www.python.org/downloads/) page.
