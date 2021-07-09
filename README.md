@@ -1,7 +1,7 @@
 # Simple Buffer Analuzer Tool
 
 ## Requirements
-A compatible python version is required. Compatible versions are 3.6, 3.7, 3.8 and 3.9.
+A compatible python version is required. Compatible versions are 2.7, 3.6, 3.7, 3.8 and 3.9.
 
 A compatible operating system (OS). Avaible for windows x64 and linux x64.
 
