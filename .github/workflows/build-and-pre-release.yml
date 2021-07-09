@@ -12,7 +12,6 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  VERSION: 0.2.1
   
 jobs:
   build-source:
@@ -20,7 +19,7 @@ jobs:
     strategy:
       matrix:
         platform: [ ubuntu-latest, windows-latest ]
-        python-version: [ '3.6' ]
+        python-version: [ '3.6', '3.7', '3.8', '3.9' ]
     
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
@@ -64,11 +63,11 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build/main
-        asset_name: main-linux-amd64
+        asset_name: main-linux_amd64-python${{ matrix.python-version }}
         tag: latest
         overwrite: true
         prerelease: true
-        body: "${{ env.BUILD_TYPE }} v${{ env.VERSION }} for ${{ matrix.platform }}"
+        body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
 
     - name: Upload Files to a GitHub Release (Windows)
       if: ${{ matrix.platform == 'windows-latest' }}
@@ -76,8 +75,8 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build\${{ env.BUILD_TYPE }}\main.exe
-        asset_name: main-windows-amd64.exe
+        asset_name: main-windows_amd64-python${{ matrix.python-version }}.exe
         tag: latest
         overwrite: true
         prerelease: true
-        body: "${{ env.BUILD_TYPE }} v${{ env.VERSION }} for ${{ matrix.platform }}"
+        body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
