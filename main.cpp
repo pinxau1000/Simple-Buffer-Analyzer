@@ -13,24 +13,10 @@ using namespace std;
 
 namespace plt = matplotlibcpp;
 
-/**
- * @brief Pretende-se verificar se a descodificação do stream em tempo real é 
- * possível, considerando um determinado débito de rede (CBR) e tamanho de 
- * buffer, ambos fornecidos como parâmetros de entrada.
- * 
- *                      B = R*D <=> D = B/R <=> R = B/D
- * 
- * B: Capacidade Buffer (bits);
- * R: Débito de Transmissão (bits/s);
- * D: Delay do sistema (s);
- * 
- * Ou seja, o sistema de transmissão depende do buffer e da velocidade de 
- * transmissão com que o mesmo é vazado.
- */
 int main(int argc, char** argv)
 {
     // Parse Args
-    TCLAP::CmdLine cmdParser("========================================             \n             _______________\nframes (in) |   buffer      |  bit-rate (out)\n       --->>|<--  length -->|--->>\n            |_______________|\n\nRequired inputs:            \n - frames:          provided by a csv input file;\n - bit-rate:        user input as parameter;\n - buffer length:   user input as parameter;\n\nBuffer Bit-Rate Tool by Jose Rosa (github.com/pinxau1000)", ' ', "0.2");
+    TCLAP::CmdLine cmdParser("========================================             \n             _______________\nframes (in) |   buffer      |  bit-rate (out)\n       --->>|<--  length -->|--->>\n            |_______________|\n\nRequired inputs:            \n - frames:          provided by a csv input file;\n - bit-rate:        user input as parameter;\n - buffer length:   user input as parameter;\n\nBuffer Bit-Rate Tool by Jose Rosa (github.com/pinxau1000)", ' ', "0.2.1");
     TCLAP::UnlabeledValueArg<std::string> arg_csv_file("csv_file", "Path to CSV file. The expected CSV structure is:\n<FPS>,0\n<BYTES>,<PSNR>\n ... \n<BYTES>,<PSNR>\n where, FPS: frames/seg; BYTES: bytes; PSNR: dB. (path)", true, "", "string", cmdParser);
     TCLAP::UnlabeledValueArg<int> arg_bit_rate("bit_rate", "Bit-rate of the network. ((defined -u)/s)", true, 0, "int", cmdParser);
     TCLAP::UnlabeledValueArg<int> arg_buffer_length("buffer_length", "Buffer length or size. (defined -u)", true, 0, "int", cmdParser);
