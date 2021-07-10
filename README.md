@@ -1,7 +1,7 @@
 # Simple Buffer Analyzer Tool
 
 ## Requirements
-- Python version 2.7, 3.6, 3.7, 3.8 or 3.9. A compatible python version is required. To download and install python go ahead to [python downloads](https://www.python.org/downloads/) page.
+- Python version 3.6, 3.7, 3.8 or 3.9. A compatible python version is required. To download and install python go ahead to [python downloads](https://www.python.org/downloads/) page.
 - Matplotlib and Numpy are required when generating plots. To install them run `python -m pip install --upgrade matplotlib numpy` on the cmd or terminal.
 - A compatible operating system (OS). Avaible for windows x64 and linux x64.
 
@@ -13,6 +13,10 @@
 **Or**
 
 2. You can also build the source files using CMAKE so that the installation fits your requirements.
+   - **Dependencies Build Notes:**
+   - TCLAP: https://sourceforge.net/p/tclap/code/ci/v1.2.4/tree/INSTALL
+   - matplotlib-cpp: https://github.com/lava/matplotlib-cpp#installation
+
 
 
 ## Run
