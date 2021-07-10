@@ -150,6 +150,19 @@ public:
         return Buffer::get_state_str(_state);
     }
 
+    std::string get_state_str_inverted()
+    {
+        if (_state == State::overflow)
+        {
+            return Buffer::get_state_str(State::underflow);
+        }
+        if (_state == State::underflow)
+        {
+            return Buffer::get_state_str(State::overflow);
+        }
+        return "invalid state";
+    }
+
     State get_last_state()
     {
         return _last_state;

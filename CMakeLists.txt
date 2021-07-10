@@ -7,7 +7,7 @@ set(BUILD_SHARED_LIBS OFF)
 add_executable(main main.cpp)
 
 include_directories(include)
-find_package(PythonInterp REQUIRED)
-find_package(PythonLibs  REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-target_link_libraries(main ${PYTHON_LIBRARIES})
+
+find_package(Python3 COMPONENTS Development NumPy)
+target_include_directories(main PRIVATE ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
+target_link_libraries(main Python3::Python Python3::NumPy)

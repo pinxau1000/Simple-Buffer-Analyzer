@@ -68,10 +68,11 @@ int main(int argc, char** argv)
     // bit-rate (bit/s) ___ 1 (s)       <=> bit-rate (bit/s) ___ 1 (s)      
     //    x (bit/frame) ___ T frame (s)        x (bit/frame) ___ 1/Hz (Frames/s)
     // 
-    int frame_bit_rate = round((arg_bit_rate.getValue()*(double)factor) / (double) bitstream.get_fps());    //the bit rate per frame (b/s)
+    int frame_bit_rate = round((arg_bit_rate.getValue() * (double) factor) / (double) bitstream.get_fps());    //the bit rate per frame (b/s)
     int actual_bit_rate = frame_bit_rate *(double) bitstream.get_fps();                                     //actual bit-rate, since the bit-rate per frame is a rounded value (b/s)
     double delay = buffer.get_length() / (double) arg_bit_rate.getValue();                                  //delay with the original parameters (s)
     double actual_delay = buffer.get_length() / (double) actual_bit_rate;                                   //actual delay (s)
+    double actual_delay_frames = actual_delay * (double) bitstream.get_fps();                                   //actual delay (s)
 
     if (arg_verbose.getValue() >= VERBOSE_EXTRA)
     {
@@ -94,6 +95,7 @@ int main(int argc, char** argv)
         }
         cout << COMPUTE << "actual bit-rate: " << actual_bit_rate << " (bits/s);" << endl;
         cout << COMPUTE << "actual delay: " << actual_delay << " (s);" << endl;
+        cout << COMPUTE << "actual delay: " << actual_delay_frames << " (frames);" << endl;
     }
 
     // 2.1 - Verificação de conformidade
@@ -117,8 +119,12 @@ int main(int argc, char** argv)
             cout << SEPARATOR_41 << endl;
             cout << "*\t\t\t\t BUFFER FAIL \t\t\t*" << endl;
             cout << SEPARATOR_41 << endl;
-            cout << OUTPUT << "buffer status: " << buffer.get_state_str() << ";" << endl;
-            cout << OUTPUT << "fail frame: " << buffer.get_cur_frame() - 1 << ";" << endl;
+            cout << OUTPUT << "buffer (encoder) status: " << buffer.get_state_str() << ";" << endl;
+            cout << OUTPUT << "buffer (encoder) fail frame: " << buffer.get_cur_frame() - 1 << ";" << endl;
+            cout << OUTPUT << "buffer (encoder) fail time: " << (buffer.get_cur_frame() - 1)/bitstream.get_fps() << ";" << endl;
+            cout << OUTPUT << "buffer (decoder) status: " << buffer.get_state_str_inverted() << ";" << endl;
+            cout << OUTPUT << "buffer (decoder) fail frame: " << (buffer.get_cur_frame() - 1) + floor(actual_delay_frames) << ";" << endl;
+            cout << OUTPUT << "buffer (decoder) fail time: " << ((buffer.get_cur_frame() - 1)/bitstream.get_fps()) + actual_delay << ";" << endl;
             break;
         }
         if (buffer.get_state() == State::done)
