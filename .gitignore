@@ -1,6 +1,9 @@
 .venv
 .idea
 .vscode
-cmake-build-debug
+
+cmake-build-*
 output*
+
+**/CMakeLists.txt
 CMakeLists.txt
