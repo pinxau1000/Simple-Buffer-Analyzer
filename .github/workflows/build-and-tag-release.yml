@@ -8,6 +8,7 @@ on:
     inputs:
       trigger:
         required: false
+        description: "Manual Trigger"
         default: 'workflow_dispatcher'
   
 env:
