@@ -1,7 +1,6 @@
 .venv
 .idea
 .vscode
-
 cmake-build-debug
-
 output*
+CMakeLists.txt
