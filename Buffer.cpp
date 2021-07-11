@@ -9,8 +9,8 @@ class Buffer
 {
 private:
     int _length = 0;                    //length in bits
-    int _initial_ocupation = 0;         //initial ocupation in bits
-    int _ocupation = 0;                 //current ocupation in bits
+    int _initial_occupation = 0;         //initial occupation in bits
+    int _occupation = 0;                 //current occupation in bits
     int _total_frames = 0;              //total frames to receive
     int _cur_frame_idx = 0;             //count the frame that entered the buffer (idx because starts at 0)
     State _state = State::init;         //buffer state (init, overflow, underflow, final)
@@ -41,12 +41,12 @@ private:
         _last_state = _state;
         
         //Overflow condition
-        if (_ocupation > _length)
+        if (_occupation > _length)
         {
             _state = State::overflow;
         }
         //Underflow condition
-        else if (_ocupation < 0)
+        else if (_occupation < 0)
         {
             //If the buffer is emptying then is not overflow!
             if (_state != State::final)
@@ -60,8 +60,8 @@ private:
         }
         else
         {
-            //Initial ocupation filled the buffer -> change to Normal state
-            if (_last_state == State::init && _ocupation > _initial_ocupation)
+            //Initial occupation filled the buffer -> change to Normal state
+            if (_last_state == State::init && _occupation > _initial_occupation)
             {
                 _state = State::normal;
             }
@@ -79,13 +79,13 @@ public:
     {
     }
 
-    Buffer(int length, int total_frames, int initial_ocupation = -1, int verbose = VERBOSE_STANDARD)
+    Buffer(int length, int total_frames, int initial_occupation = -1, int verbose = VERBOSE_STANDARD)
     {
         set_length(length);
         set_total_frames(total_frames);
-        if (initial_ocupation < 0)
+        if (initial_occupation < 0)
         {
-            set_initial_ocupation(round((double) 0.5 * _length));
+            set_initial_occupation(round((double) 0.5 * _length));
         }
         _verbose = verbose;
     }
@@ -120,24 +120,24 @@ public:
         return _length;
     }
 
-    int get_ocupation()
+    int get_occupation()
     {
-        return _ocupation;
+        return _occupation;
     }
 
-    int get_initial_ocupation()
+    int get_initial_occupation()
     {
-        return _initial_ocupation;
+        return _initial_occupation;
     }
 
-    void set_initial_ocupation(int initial_ocupation)
+    void set_initial_occupation(int initial_occupation)
     {
-        if (initial_ocupation > _length)
+        if (initial_occupation > _length)
         {
-            std::cerr << ERROR << "Buffer initital ocupation should be less than buffer total length. Got " << initial_ocupation << " expected <" << _length << "!" << std::endl;
+            std::cerr << ERROR << "Buffer initital occupation should be less than buffer total length. Got " << initial_occupation << " expected <" << _length << "!" << std::endl;
             throw VALUE_ERROR_EXCEPTION;
         }
-        _initial_ocupation = initial_ocupation;
+        _initial_occupation = initial_occupation;
     }
 
     State get_state()
@@ -148,6 +148,19 @@ public:
     std::string get_state_str()
     {
         return Buffer::get_state_str(_state);
+    }
+
+    std::string get_state_str_decoder()
+    {
+        if (_state == State::overflow)
+        {
+            return Buffer::get_state_str(State::underflow);
+        }
+        if (_state == State::underflow)
+        {
+            return Buffer::get_state_str(State::overflow);
+        }
+        return "invalid state";
     }
 
     State get_last_state()
@@ -172,31 +185,31 @@ public:
 
     void in_out(int in_bits, int out_bits)
     {
-        _ocupation = _ocupation + (in_bits - out_bits);
+        _occupation = _occupation + (in_bits - out_bits);
         _cur_frame_idx++;
         change_state(in_bits, out_bits);
         if (_verbose >= VERBOSE_ALL) {
-            std::cout << COMPUTE << "buffer occupation: " << _ocupation << "/" << _length << " - in/out: " << in_bits << "/" << out_bits  << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
+            std::cout << COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: " << in_bits << "/" << out_bits  << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
         }
 
     }
 
     void in(int in_bits)
     {
-        _ocupation += in_bits;
+        _occupation += in_bits;
         _cur_frame_idx++;
         change_state(in_bits, 0);
         if (_verbose >= VERBOSE_ALL) {
-            std::cout << COMPUTE << "buffer occupation: " << _ocupation << "/" << _length << " - in/out: " << in_bits << "/0 - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
+            std::cout << COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: " << in_bits << "/0 - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
         }
     }
 
     void out(int out_bits)
     {
-        _ocupation -= out_bits;
+        _occupation -= out_bits;
         change_state(0, out_bits);
         if (_verbose >= VERBOSE_ALL) {
-            std::cout << COMPUTE << "buffer occupation: " << _ocupation << "/" << _length << " - in/out: 0/" << out_bits << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
+            std::cout << COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: 0/" << out_bits << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
         }
     }
 

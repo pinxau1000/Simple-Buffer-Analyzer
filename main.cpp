@@ -3,26 +3,24 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <ctime>
 #include "Buffer.cpp"
 #include "Bitstream.cpp"
 #include "Definitions.hpp"
 #include "include/tclap/CmdLine.h"
-#include "include/matplotlibcpp.h"
 
 using namespace std;
-
-namespace plt = matplotlibcpp;
 
 int main(int argc, char** argv)
 {
     // Parse Args
-    TCLAP::CmdLine cmdParser("========================================             \n             _______________\nframes (in) |   buffer      |  bit-rate (out)\n       --->>|<--  length -->|--->>\n            |_______________|\n\nRequired inputs:            \n - frames:          provided by a csv input file;\n - bit-rate:        user input as parameter;\n - buffer length:   user input as parameter;\n\nBuffer Bit-Rate Tool by Jose Rosa (github.com/pinxau1000)", ' ', "0.2.1");
+    TCLAP::CmdLine cmdParser("========================================             \n             _______________\nframes (in) |   buffer      |  bit-rate (out)\n       --->>|<--  length -->|--->>\n            |_______________|\n\nRequired inputs:            \n - frames:          provided by a csv input file;\n - bit-rate:        user input as parameter;\n - buffer length:   user input as parameter;\n\nBuffer Bit-Rate Tool by Jose Rosa (github.com/pinxau1000)", ' ', VERSION);
     TCLAP::UnlabeledValueArg<std::string> arg_csv_file("csv_file", "Path to CSV file. The expected CSV structure is:\n<FPS>,0\n<BYTES>,<PSNR>\n ... \n<BYTES>,<PSNR>\n where, FPS: frames/seg; BYTES: bytes; PSNR: dB. (path)", true, "", "string", cmdParser);
     TCLAP::UnlabeledValueArg<int> arg_bit_rate("bit_rate", "Bit-rate of the network. ((defined -u)/s)", true, 0, "int", cmdParser);
     TCLAP::UnlabeledValueArg<int> arg_buffer_length("buffer_length", "Buffer length or size. (defined -u)", true, 0, "int", cmdParser);
-    TCLAP::ValueArg<int> arg_init_buffer_length("i", "initial_buffer_ocupation", "Number of bits required to start outputing data to the network. If not specified then it's 0.5*buffer_length. (defined -u)", false, 0, "int", cmdParser);
+    TCLAP::ValueArg<int> arg_init_buffer_length("i", "initial_buffer_occupation", "Number of bits required to start outputing data to the network. If not specified then it's 0.5*buffer_length. (defined -u)", false, 0, "int", cmdParser);
     TCLAP::ValueArg<int> arg_fps("f", "frame_rate", "If passed then the FPS read from the csv_file is ignored! (frames/sec)", false, 0, "int", cmdParser);
-    TCLAP::ValueArg<std::string> arg_unit("u", "unit", "The unit of the bits based fields [bit_rate, buffer_length & initial_buffer_ocupation]. Possible options are: b, kb, Mb, Gb, B, kB, MB, GB. Default to b.", false, "b", "string", cmdParser);
+    TCLAP::ValueArg<std::string> arg_unit("u", "unit", "The unit of the bits based fields [bit_rate, buffer_length & initial_buffer_occupation]. Possible options are: b, kb, Mb, Gb, B, kB, MB, GB. Default to b.", false, "b", "string", cmdParser);
     TCLAP::ValueArg<std::string> arg_generate_csv("c", "generate_csv", "If passed a csv file containing some statistics will be generated with the name provided.", false, "", "string", cmdParser);
     TCLAP::ValueArg<std::string> arg_generate_plot("p", "generate_plot", "If passed a plot with some statistics will be generated with the name provided.", false, "", "string", cmdParser);
     TCLAP::ValueArg<int> arg_verbose("v", "verbose", "Sets the verbose level. Values are: " + to_string(VERBOSE_STANDARD) + " - Standard output; " + to_string(VERBOSE_EXTRA) + " - Extra output; " + to_string(VERBOSE_ALL) + " - All output. Defaults to 1.", false, 1, "int", cmdParser);
@@ -57,7 +55,7 @@ int main(int argc, char** argv)
 
     Buffer buffer(arg_buffer_length.getValue()*(double)factor, bitstream.get_total_frames(), -1, arg_verbose.getValue());   //the encoder buffer
     if (arg_init_buffer_length.isSet()){
-        buffer.set_initial_ocupation(arg_init_buffer_length.getValue()*(double)factor);
+        buffer.set_initial_occupation(arg_init_buffer_length.getValue()*(double)factor);
     }
 
     // Actual bit-rate, since we are working with the frame time base, we need 
@@ -85,7 +83,7 @@ int main(int argc, char** argv)
         }
         cout << PARSE << "FPS: " <<  bitstream.get_fps() << " (Hz);" << endl;
         cout << PARSE << "buffer length: " <<  buffer.get_length() << " (bits);" << endl;
-        cout << PARSE << "buffer initial occupation: " <<  buffer.get_initial_ocupation() << " (bits);" << endl;
+        cout << PARSE << "buffer initial occupation: " <<  buffer.get_initial_occupation() << " (bits);" << endl;
         cout << PARSE << "bit-rate: " <<  arg_bit_rate.getValue()*(double)factor << " (bits/s);" << endl;
         cout << COMPUTE << "delay: " <<  delay << " (s);" << endl;
         if (arg_verbose.getValue() >= VERBOSE_EXTRA)
@@ -117,8 +115,12 @@ int main(int argc, char** argv)
             cout << SEPARATOR_41 << endl;
             cout << "*\t\t\t\t BUFFER FAIL \t\t\t*" << endl;
             cout << SEPARATOR_41 << endl;
-            cout << OUTPUT << "buffer status: " << buffer.get_state_str() << ";" << endl;
-            cout << OUTPUT << "fail frame: " << buffer.get_cur_frame() - 1 << ";" << endl;
+            cout << OUTPUT << "buffer (encoder) status: " << buffer.get_state_str() << ";" << endl;
+            cout << OUTPUT << "buffer (encoder) fail frame: " << buffer.get_cur_frame() - 1 << ";" << endl;
+            cout << OUTPUT << "buffer (encoder) fail time: " << (buffer.get_cur_frame() - 1)/bitstream.get_fps() << ";" << endl;
+            cout << OUTPUT << "buffer (decoder) status: " << buffer.get_state_str_decoder() << ";" << endl;
+            cout << OUTPUT << "buffer (decoder) fail frame: " << ((buffer.get_cur_frame() - 1) + (actual_delay*bitstream.get_fps())) << ";" << endl;
+            cout << OUTPUT << "buffer (decoder) fail time: " << (((buffer.get_cur_frame() - 1)/bitstream.get_fps()) + actual_delay) << ";" << endl;
             break;
         }
         if (buffer.get_state() == State::done)
@@ -153,17 +155,25 @@ int main(int argc, char** argv)
             time_stamp.push_back(count/(double)bitstream.get_fps());
             count < bitstream.get_total_frames() ? bit_rate_in.push_back(bitstream.get_frame(buffer.get_cur_frame() - 1).get_bits()) : bit_rate_in.push_back(0);
             bit_rate_out.push_back(frame_bit_rate);
-            buffer_occupation.push_back(buffer.get_ocupation());
+            buffer_occupation.push_back(buffer.get_occupation());
             buffer_length.push_back(buffer.get_length());
         }
     }
 
-    if (!arg_generate_csv.getValue().empty())
+    if (!arg_generate_csv.getValue().empty() || !arg_generate_plot.getValue().empty())
     {
-        fstream output_file(arg_generate_csv.getValue(), ios::out);
+        time_t raw_time;
+        tm* time_info;
+        char plt_csv_name[27];
+        time_info = localtime(&raw_time);
+        strftime(plt_csv_name, 14, "plotdata_%Y%m%d%H%M%S.csv", time_info);
+        
+        string csv_name = (!arg_generate_csv.getValue().empty()) ? arg_generate_csv.getValue() : plt_csv_name ;
+
+        fstream output_file(csv_name, ios::out);
         if (!output_file.is_open())
         {
-            std::cerr << ERROR << "Unable to create " << arg_generate_csv.getValue() << "!" << std::endl;
+            std::cerr << ERROR << "Unable to create " << csv_name << "!" << std::endl;
             throw FILE_UNABLE_TO_WRITE;
         }
 
@@ -173,22 +183,17 @@ int main(int argc, char** argv)
             output_file << time_stamp[i] << CSV_FILE_SEPARATOR << bit_rate_in[i] << CSV_FILE_SEPARATOR << bit_rate_out[i] << CSV_FILE_SEPARATOR << buffer_occupation[i] << CSV_FILE_SEPARATOR << buffer_length[i] << CSV_FILE_SEPARATOR << endl;
         }
         output_file.close();
+
+        if (!arg_generate_plot.getValue().empty())
+        {
+            string command = "python save_csv_data.py " + csv_name + " " + arg_generate_plot.getValue();
+            system(command.c_str());
+            if (arg_generate_csv.getValue().empty()) {
+                remove(csv_name.c_str());
+            }
+        }
     }
     
-    if (!arg_generate_plot.getValue().empty())
-    {
-        plt::figure();
-        plt::named_plot("bits in (bit)", time_stamp, bit_rate_in);
-        plt::named_plot("bits out (bit)", time_stamp, bit_rate_out);
-        plt::named_plot("buffer occupation (bit)", time_stamp, buffer_occupation, "--");
-        plt::named_plot("buffer size (bit)", time_stamp, buffer_length, "--");
-        plt::title("Buffer Statistics");
-        plt::legend();
-        plt::xlabel("time (s)");
-        plt::ylabel("bits (bit)");
-        plt::grid(true);
-        plt::save(arg_generate_plot.getValue());
-    }
 
     // 2.2 - Débito binário médio
     cout << SEPARATOR_41 << endl;

@@ -2,6 +2,7 @@
 // <operation> | <key1>: <value1> - <key2>: <value2> - ... - <keyN>: <valueN>;
 // Example:
 // compute	| buffer occupation: 10976/400000 - in/out: 10976/0 - last/state: init/init;
+#define VERSION "0.2.2"
 
 #define ERROR "\033[31mError!\033[0m "
 #define FILE_NOT_FOUND_EXCEPTION 1010
