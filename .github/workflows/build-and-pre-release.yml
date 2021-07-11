@@ -12,7 +12,7 @@ on:
   
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
   
 jobs:
   build-source:
@@ -20,7 +20,6 @@ jobs:
     strategy:
       matrix:
         platform: [ ubuntu-latest, windows-latest ]
-        python-version: ['3.6', '3.7', '3.8', '3.9' ]
 
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
@@ -30,19 +29,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-      
-    - name: Upgrade Pip & Setuptools
-      run: python -m pip install --upgrade pip setuptools
-
-    - name: Install Matplotlib & Numpy
-      run: python -m pip install matplotlib numpy 
-      
-    - name: Copy Numpy Core to Include Folder
-      run: python ${{github.workspace}}/cp-numpy-core.py
-      
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
@@ -64,7 +50,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build/main
-        asset_name: main-linux_amd64-python${{ matrix.python-version }}
+        asset_name: main-linux_amd64
         tag: latest
         overwrite: true
         prerelease: true
@@ -76,7 +62,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build\${{ env.BUILD_TYPE }}\main.exe
-        asset_name: main-windows_amd64-python${{ matrix.python-version }}.exe
+        asset_name: main-windows_amd64.exe
         tag: latest
         overwrite: true
         prerelease: true
