@@ -150,7 +150,7 @@ public:
         return Buffer::get_state_str(_state);
     }
 
-    std::string get_state_str_decoder()
+    std::string get_state_str_inverted()
     {
         if (_state == State::overflow)
         {

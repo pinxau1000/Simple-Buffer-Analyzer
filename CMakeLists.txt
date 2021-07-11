@@ -1,4 +1,3 @@
-# USE THIS FOR LOCAL COMPILATION
 cmake_minimum_required(VERSION 3.19)
 project(main)
 
@@ -10,4 +9,4 @@ set(CMAKE_EXE_LINKER_FLAGS -static)
 
 add_executable(main main.cpp)
 
-target_include_directories(main PRIVATE include)
+include_directories(include)

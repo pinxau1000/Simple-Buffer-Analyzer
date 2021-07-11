@@ -1,8 +1,7 @@
 .venv
 .idea
 .vscode
-
 cmake-build-*
-
-CMakeLists.txt
+output*
 **/CMakeLists.txt
+CMakeLists.txt
