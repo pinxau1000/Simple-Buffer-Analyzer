@@ -6,8 +6,8 @@
 #define VERSION "0.2.2"
 #endif
 
-#ifndef ERROR
-#define ERROR "\033[31mError!\033[0m "
+#ifndef STDERR_ERROR
+#define STDERR_ERROR "\033[31mError!\033[0m "
 #endif
 
 #ifndef FILE_NOT_FOUND_EXCEPTION
@@ -51,18 +51,33 @@
 #define SEPARATOR_41 "*****************************************"
 #endif
 
-#ifndef PARSE
-#define PARSE "parse\t| "
+#ifndef STDOUT_PARSE
+#define STDOUT_PARSE "parse\t| "
 #endif
 
-#ifndef COMPUTE
-#define COMPUTE "compute\t| "
+#ifndef STDOUT_COMPUTE
+#define STDOUT_COMPUTE "compute\t| "
 #endif
 
-#ifndef OUTPUT
-#define OUTPUT "output\t| "
+#ifndef STDOUT_OUTPUT
+#define STDOUT_OUTPUT "output\t| "
+#endif
+
+#ifndef STDOUT_WARNING
+#define STDOUT_WARNING "warning\t| "
 #endif
 
 #ifndef CSV_FILE_SEPARATOR
 #define CSV_FILE_SEPARATOR ", "
+#endif
+
+#ifndef PYTHON_PLOT_SCRIPT
+#define PYTHON_PLOT_SCRIPT
+
+#include <string>
+std::string PYTHON_COMMAND(std::string input_file, std::string output_file, std::string python_path = "python3");
+#endif
+
+#ifndef BITS_MAX
+#define BITS_MAX 1000001
 #endif

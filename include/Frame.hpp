@@ -9,7 +9,7 @@ class Frame
 {
 private:
     double _psnr;
-    int _bits;
+    long long int _bits;
 public:
         Frame();
         ~Frame();
@@ -17,7 +17,7 @@ public:
         void set_psnr(double psnr);
         void set_bytes(double bytes);
         double get_bytes();
-        int get_bits();
-        void set_bits(int bits);
+        long long int get_bits();
+        void set_bits(long long int bits);
 };
 #endif //MAIN_FRAME_HPP

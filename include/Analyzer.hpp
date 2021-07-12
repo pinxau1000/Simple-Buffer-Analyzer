@@ -15,7 +15,7 @@
 #include "Bitstream.hpp"
 #include "Definitions.hpp"
 
-Buffer analyze(std::string arg_csv_file, int arg_bit_rate, int arg_buffer_length, int arg_init_buffer_length = 0,
+Buffer analyze(std::string arg_csv_file, double arg_bit_rate, double arg_buffer_length, double arg_init_buffer_length = 0,
                int arg_fps = 0, std::string arg_unit = "b", std::string arg_generate_csv = "",
                std::string arg_generate_plot = "", int arg_verbose = VERBOSE_STANDARD);
 

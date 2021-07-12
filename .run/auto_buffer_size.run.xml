@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration
+          default="false"
+          name="auto_buffer_size"
+          type="CMakeRunConfiguration"
+          factoryName="Application"
+          PROGRAM_PARAMS="/home/pinxau1000/Repos/Simple-Buffer-Analyzer/video_traces/Terse_DieFirma_H261_64kbps.txt 63920 30000 -s 886713 -r 0.95 -v 4"
+          REDIRECT_INPUT="false"
+          ELEVATE="false"
+          USE_EXTERNAL_CONSOLE="false"
+          PASS_PARENT_ENVS_2="true"
+          PROJECT_NAME="main"
+          TARGET_NAME="auto_buffer_size"
+          CONFIG_NAME="Debug"
+          RUN_TARGET_PROJECT_NAME="main"
+          RUN_TARGET_NAME="auto_buffer_size"
+  >
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>

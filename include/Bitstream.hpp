@@ -13,15 +13,15 @@
 class Bitstream
 {
 private:
-    std::vector<Frame> _bitstream;  //frames that are part of bitstream
-    int _fps = 0;                   //frame rate of the bitstream (HZ)
-    std::string _path = "";         //path of the bitstream
-    int _frames = 0;                //total frames of the bitstream
-    double _duration = 0;           //total time of the bitstream (s)
-    int _bits = 0;                  //total of bits of the bitstream
-    double _psnr = 0;               //total of psnr of bitstream
-    int _min_bits = INT_MAX;        //bits of the frame with lower bits
-    int _max_bits = INT_MIN;        //bits of the frame with higher bits
+    std::vector<Frame> _bitstream;      //frames that are part of bitstream
+    int _fps = 0;                       //frame rate of the bitstream (HZ)
+    std::string _path = "";             //path of the bitstream
+    int _frames = 0;                    //total frames of the bitstream
+    double _duration = 0;               //total time of the bitstream (s)
+    unsigned long long int _bits = 0;   //total of bits of the bitstream
+    double _psnr = 0;                   //total of psnr of bitstream
+    long long int _min_bits = LONG_LONG_MAX;    //bits of the frame with lower bits
+    long long int _max_bits = LONG_LONG_MIN;    //bits of the frame with higher bits
     int _verbose = VERBOSE_STANDARD;
     void set_frames(int frames);
     void set_duration(double duration);
@@ -38,13 +38,13 @@ public:
         std::string get_path();
         int get_total_frames();
         double get_total_duration();
-        int get_total_bits();
+        long long int get_total_bits();
         double get_total_bytes();
-        int get_avg_bits_frame();
+        double get_avg_bits_frame();
         double get_avg_bytes_frame();
         double get_total_psnr();
         double get_avg_psnr();
-        int get_min_bits();
-        int get_max_bits();
+        long long int get_min_bits();
+        long long int get_max_bits();
 };
 #endif //MAIN_BITSTREAM_HPP

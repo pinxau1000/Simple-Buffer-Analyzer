@@ -31,6 +31,7 @@ foreach(source_file ${APP_SOURCES})
             include/Bitstream.cpp
             include/Buffer.cpp
             include/Frame.cpp
+            include/Definitions.cpp
             include/Analyzer.hpp
             include/Bitstream.hpp
             include/Buffer.hpp

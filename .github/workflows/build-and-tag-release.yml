@@ -37,7 +37,7 @@ jobs:
       
     - name: Build Source
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target main
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
       
     - name: Test Build
       working-directory: ${{github.workspace}}/build
@@ -50,8 +50,12 @@ jobs:
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: build/main
-        asset_name: main-linux_amd64
+        file: |
+          build/manual_buffer_size-linux_amd64
+          auto_buffer_size-linux_amd64
+        asset_name: |
+          manual_buffer_size-linux_amd64
+          auto_buffer_size-linux_amd64
         tag: ${{github.ref }}
         overwrite: false
         prerelease: false
@@ -62,8 +66,12 @@ jobs:
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: build\${{ env.BUILD_TYPE }}\main.exe
-        asset_name: main-windows_amd64
+        file: |
+          build\${{ env.BUILD_TYPE }}\manual_buffer_size.exe
+          build\${{ env.BUILD_TYPE }}\auto_buffer_size.exe
+        asset_name: |
+          manual_buffer_size-windows_amd64.exe
+          auto_buffer_size-windows_amd64.exe
         tag: ${{ github.ref }}
         overwrite: true
         prerelease: false

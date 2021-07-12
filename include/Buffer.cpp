@@ -1,9 +1,9 @@
 #include "Buffer.hpp"
 
-void Buffer::set_length(int length){
+void Buffer::set_length(long long int length){
     if (length < 1)
     {
-        std::cerr << ERROR << "Buffer length should be a positive integer. Got" << length << " expected >0!" << std::endl;
+        std::cerr << STDERR_ERROR << "Buffer length should be a positive integer. Got " << length << " expected >0!" << std::endl;
         throw VALUE_ERROR_EXCEPTION;
     }
     _length = length;
@@ -12,13 +12,13 @@ void Buffer::set_length(int length){
 void Buffer::set_total_frames(int total_frames){
     if (total_frames < 1)
     {
-        std::cerr << ERROR << "Total frames should be a positive integer. Got" << total_frames << " expected >0!" << std::endl;
+        std::cerr << STDERR_ERROR << "Total frames should be a positive integer. Got " << total_frames << " expected >0!" << std::endl;
         throw VALUE_ERROR_EXCEPTION;
     }
     _total_frames = total_frames;
 }
 
-void Buffer::change_state(int in_bits, int out_bits)
+void Buffer::change_state(long long int in_bits, long long int out_bits)
 {
     _last_state = _state;
 
@@ -60,7 +60,7 @@ Buffer::Buffer()
 {
 }
 
-Buffer::Buffer(int length, int total_frames, int initial_occupation = -1, int verbose = VERBOSE_STANDARD)
+Buffer::Buffer(long long int length, int total_frames, long long int initial_occupation = -1, int verbose = VERBOSE_STANDARD)
 {
     set_length(length);
     set_total_frames(total_frames);
@@ -75,26 +75,26 @@ Buffer::~Buffer()
 {
 }
 
-int Buffer::get_length()
+long long int Buffer::get_length()
 {
     return _length;
 }
 
-int Buffer::get_occupation()
+long long int Buffer::get_occupation()
 {
     return _occupation;
 }
 
-int Buffer::get_initial_occupation()
+long long int Buffer::get_initial_occupation()
 {
     return _initial_occupation;
 }
 
-void Buffer::set_initial_occupation(int initial_occupation)
+void Buffer::set_initial_occupation(long long int initial_occupation)
 {
     if (initial_occupation > _length)
     {
-        std::cerr << ERROR << "Buffer initital occupation should be less than buffer total length. Got " << initial_occupation << " expected <" << _length << "!" << std::endl;
+        std::cerr << STDERR_ERROR << "Buffer initital occupation should be less than buffer total length. Got " << initial_occupation << " expected <" << _length << "!" << std::endl;
         throw VALUE_ERROR_EXCEPTION;
     }
     _initial_occupation = initial_occupation;
@@ -120,7 +120,7 @@ std::string Buffer::get_state_str_inverted()
     {
         return Buffer::get_state_str(State::overflow);
     }
-    return "invalid state";
+    return Buffer::get_state_str(State::invalid);
 }
 
 State Buffer::get_last_state()
@@ -143,32 +143,32 @@ int Buffer::get_cur_frame()
     return _cur_frame_idx + 1;
 }
 
-void Buffer::in_out(int in_bits, int out_bits)
+void Buffer::in_out(long long int in_bits, long long int out_bits)
 {
     _occupation = _occupation + (in_bits - out_bits);
     _cur_frame_idx++;
     change_state(in_bits, out_bits);
     if (_verbose >= VERBOSE_ALL) {
-        std::cout << COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: " << in_bits << "/" << out_bits  << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
+        std::cout << STDOUT_COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: " << in_bits << "/" << out_bits << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
     }
 
 }
 
-void Buffer::in(int in_bits)
+void Buffer::in(long long int in_bits)
 {
     _occupation += in_bits;
     _cur_frame_idx++;
     change_state(in_bits, 0);
     if (_verbose >= VERBOSE_ALL) {
-        std::cout << COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: " << in_bits << "/0 - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
+        std::cout << STDOUT_COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: " << in_bits << "/0 - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
     }
 }
 
-void Buffer::out(int out_bits)
+void Buffer::out(long long int out_bits)
 {
     _occupation -= out_bits;
     change_state(0, out_bits);
     if (_verbose >= VERBOSE_ALL) {
-        std::cout << COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: 0/" << out_bits << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
+        std::cout << STDOUT_COMPUTE << "buffer occupation: " << _occupation << "/" << _length << " - in/out: 0/" << out_bits << " - last/state: " << get_last_state_str() << "/" << get_state_str() << ";" << std::endl;
     }
 }
