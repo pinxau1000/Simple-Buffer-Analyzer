@@ -10,7 +10,7 @@
 int main(int argc, char** argv)
 {
     // Parse Args
-    TCLAP::CmdLine cmdParser("========================================             \n             _______________\nframes (in) |   buffer      |  bit-rate (out)\n       --->>|<--  length -->|--->>\n            |_______________|\n\nRequired inputs:            \n - frames:          provided by a csv input file;\n - bit-rate:        user input as parameter;\n - buffer length:   user input as parameter;\n\nBuffer Bit-Rate Tool by Jose Rosa (github.com/pinxau1000)", ' ', VERSION);
+    TCLAP::CmdLine cmdParser("========================================             \n             _______________\nframes (in) |   buffer      |  bit-rate (out)\n       --->>|<--  length -->|--->>\n            |_______________|\n\nRequired inputs:            \n - frames:          provided by a csv input file;\n - bit-rate:        user input as parameter;\n - buffer length:   user input as parameter;\n\nBuffer Bit-Rate Tool by github.com/pinxau1000", ' ', VERSION);
     TCLAP::UnlabeledValueArg<std::string> arg_csv_file("csv_file", "Path to CSV file. The expected CSV structure is:\n<FPS>,0\n<BYTES>,<PSNR>\n ... \n<BYTES>,<PSNR>\n where, FPS: frames/seg; BYTES: bytes; PSNR: dB. (path)", true, "", "std::string", cmdParser);
     TCLAP::UnlabeledValueArg<long long int> arg_bit_rate("bit_rate", "Bit-rate of the network. (bits/s)", true, 0, "double", cmdParser);
     TCLAP::UnlabeledValueArg<long long int> arg_init_buffer_length("initial_buffer_occupation", "Number of bits required to start outputting data to the network. (bits)", true, 0, "int", cmdParser);

@@ -232,7 +232,7 @@ Buffer analyze(std::string arg_csv_file, double arg_bit_rate, double arg_buffer_
 
     // 2.3 - Maximum and Minimum VBR Rate
     std::cout << SEPARATOR_41 << std::endl;
-    std::cout << "*\t\t\t\t STDOUT_OUTPUT STATS \t\t\t*" << std::endl;
+    std::cout << "*\t\t\t\t OUTPUT STATS \t\t\t*" << std::endl;
     std::cout << SEPARATOR_41 << std::endl;
     if (arg_verbose >= VERBOSE_EXTRA)
     {
