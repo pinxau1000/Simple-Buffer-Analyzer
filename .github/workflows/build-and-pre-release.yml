@@ -43,18 +43,27 @@ jobs:
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
-    
+
+    # Below a refactor is needed! (Not looking good)
     - name: Upload Files to a GitHub Release (Ubuntu)
       if: ${{ matrix.platform == 'ubuntu-latest' }}
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: |
-          build/manual_buffer_size-linux_amd64
-          build/auto_buffer_size-linux_amd64
-        asset_name: |
-          manual_buffer_size-linux_amd64
-          auto_buffer_size-linux_amd64
+        file: build/manual_buffer_size-linux_amd64
+        asset_name: manual_buffer_size-linux_amd64
+        tag: latest
+        overwrite: true
+        prerelease: true
+        body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
+
+    - name: Upload Files to a GitHub Release (Ubuntu)
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
+      uses: svenstaro/upload-release-action@2.2.1
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: build/auto_buffer_size-linux_amd64
+        asset_name: auto_buffer_size-linux_amd64
         tag: latest
         overwrite: true
         prerelease: true
@@ -65,12 +74,20 @@ jobs:
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: |
-          build\${{ env.BUILD_TYPE }}\manual_buffer_size.exe
-          build\${{ env.BUILD_TYPE }}\auto_buffer_size.exe
-        asset_name: |
-          manual_buffer_size-windows_amd64.exe
-          auto_buffer_size-windows_amd64.exe
+        file: build\${{ env.BUILD_TYPE }}\manual_buffer_size.exe
+        asset_name: manual_buffer_size-windows_amd64.exe
+        tag: latest
+        overwrite: true
+        prerelease: true
+        body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
+
+    - name: Upload Files to a GitHub Release (Windows)
+      if: ${{ matrix.platform == 'windows-latest' }}
+      uses: svenstaro/upload-release-action@2.2.1
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: build\${{ env.BUILD_TYPE }}\auto_buffer_size.exe
+        asset_name: auto_buffer_size-windows_amd64.exe
         tag: latest
         overwrite: true
         prerelease: true
