@@ -22,12 +22,12 @@
 
 exampe windows:
 ``` shell
-main-window_amd64.exe --help
+manual_buffer_size-window_amd64.exe --help
 ```
 
 exampe ubuntu:
 ``` shell
-main-ubuntu_amd64 --help
+manual_buffer_size-ubuntu_amd64 --help
 ```
 
 
