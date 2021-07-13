@@ -17,10 +17,10 @@ int main(int argc, char** argv)
     TCLAP::UnlabeledValueArg<std::string> arg_csv_file("csv_file", "Path to CSV file. The expected CSV structure is:\n<FPS>,0\n<BYTES>,<PSNR>\n ... \n<BYTES>,<PSNR>\n where, FPS: frames/seg; BYTES: bytes; PSNR: dB. (path)", true, "", "std::string", cmdParser);
     TCLAP::UnlabeledValueArg<long long int> arg_bit_rate("bit_rate", "Bit-rate of the network. (bits/s)", true, 0, "double", cmdParser);
     TCLAP::UnlabeledValueArg<long long int> arg_init_buffer_length("initial_buffer_occupation", "Number of bits required to start outputting data to the network. (bits)", true, 0, "int", cmdParser);
-    TCLAP::ValueArg<long long int> arg_buffer_seed("s", "arg_buffer_seed", "The initial buffer value (int bits) that will be used to predict the optimal value. Defaults to random.", false, 0, "int", cmdParser);
+    TCLAP::ValueArg<long long int> arg_buffer_seed("s", "seed", "The initial buffer value (int bits) that will be used to predict the optimal value. Defaults to random.", false, 0, "int", cmdParser);
     TCLAP::ValueArg<double> arg_learning_rate("r", "learning_rate", "Should be between 0 and 1 non-inclusive. Lower values cause the iteration step to be lower. Higher values cause the iteration step to be larger. Defaults to 0.5.", false, 0.5, "double", cmdParser);
     TCLAP::ValueArg<int> arg_fps("f", "frame_rate", "If passed then the FPS read from the csv_file is ignored! (frames/sec)", false, 0, "int", cmdParser);
-    TCLAP::ValueArg<std::string> arg_unit("u", "unit", "The unit of the bits based fields [bit_rate, buffer_length & initial_buffer_occupation]. Possible options are: b, kb, Mb, Gb, B, kB, MB, GB. Default to b.", false, "b", "std::string", cmdParser);
+    TCLAP::ValueArg<std::string> arg_unit("u", "unit", "The unit of the bits based fields [bit_rate]. Possible options are: b, kb, Mb, Gb, B, kB, MB, GB. Default to b.", false, "b", "std::string", cmdParser);
     TCLAP::ValueArg<std::string> arg_generate_csv("c", "generate_csv", "If passed a csv file containing some statistics will be generated with the name provided.", false, "", "std::string", cmdParser);
     TCLAP::ValueArg<std::string> arg_generate_plot("p", "generate_plot", "If passed a plot with some statistics will be generated with the name provided.", false, "", "std::string", cmdParser);
     TCLAP::ValueArg<int> arg_verbose("v", "verbose", "Sets the verbose level. Values are: " + std::to_string(VERBOSE_NONE) + " - No output; " + std::to_string(VERBOSE_MINIMAL) + " - Minimal output; " + std::to_string(VERBOSE_STANDARD) + " - Standard output; " + std::to_string(VERBOSE_EXTRA) + " - Extra output; " + std::to_string(VERBOSE_ALL) + " - All output. Defaults to " + std::to_string(VERBOSE_STANDARD), false, VERBOSE_STANDARD, "int", cmdParser);
@@ -47,6 +47,17 @@ int main(int argc, char** argv)
         throw VALUE_ERROR_EXCEPTION;
     }
 
+
+    // Parse units and get multiplier factor
+    int factor = 1;
+    if (arg_unit.getValue() == "kb"){ factor = 1e3; }
+    else if (arg_unit.getValue() == "Mb"){ factor = 1e6; }
+    else if (arg_unit.getValue() == "B"){ factor = 8; }
+    else if (arg_unit.getValue() == "kB"){ factor = (1e3) * 8; }
+    else if (arg_unit.getValue() == "MB"){ factor = (1e6) * 8; }
+
+    long long int bit_rate = llround(arg_bit_rate.getValue() * (double) factor);
+
     std::default_random_engine generator;
     std::uniform_int_distribution<int> distribution_step(0, 1);
 
@@ -62,15 +73,15 @@ int main(int argc, char** argv)
     long long int min_buffer_length = LLONG_MAX;
     int iter_count = 0;
 
-    if (arg_verbose >= VERBOSE_EXTRA) { if (arg_verbose >= VERBOSE_ALL) { std::cout << SEPARATOR_41 << std::endl; std::cout << "*\t\t AUTO BUFFER VAR VALUES \t\t*" << std::endl; std::cout << SEPARATOR_41 << std::endl; std::cout << STDOUT_PARSE << "input file: " << arg_csv_file.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "bit-rate: " << arg_bit_rate.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "buffer initial search value (seed): " << arg_buffer_seed.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "learning rate: " << arg_learning_rate.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "buffer initial length: " << arg_init_buffer_length.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "fps: " << arg_fps.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "units: " << arg_unit.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "output csv: " << arg_generate_csv.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "output plot: " << arg_generate_plot.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "verbosity: " << arg_verbose.getValue() << ";" << std::endl; } std::cout << STDOUT_COMPUTE << "buffer initial search value (seed): " << cur_buffer_length << ";" << std::endl; std::cout << STDOUT_COMPUTE << "buffer search learning rate: " << arg_learning_rate.getValue() << ";" << std::endl; std::cout << STDOUT_COMPUTE << "buffer search step: " << step << ";" << std::endl; }
+    if (arg_verbose >= VERBOSE_EXTRA) { std::cout << SEPARATOR_41 << std::endl; std::cout << "*\t\t AUTO BUFFER VAR VALUES \t\t*" << std::endl; std::cout << SEPARATOR_41 << std::endl;  if (arg_verbose >= VERBOSE_ALL) { std::cout << STDOUT_PARSE << "input file: " << arg_csv_file.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "bit-rate: " << arg_bit_rate.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "buffer initial search value (seed): " << arg_buffer_seed.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "learning rate: " << arg_learning_rate.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "buffer initial length: " << arg_init_buffer_length.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "fps: " << arg_fps.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "units: " << arg_unit.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "output csv: " << arg_generate_csv.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "output plot: " << arg_generate_plot.getValue() << ";" << std::endl; std::cout << STDOUT_PARSE << "verbosity: " << arg_verbose.getValue() << ";" << std::endl; } std::cout << STDOUT_COMPUTE << "buffer initial search value (seed): " << cur_buffer_length << ";" << std::endl; std::cout << STDOUT_COMPUTE << "buffer search learning rate: " << arg_learning_rate.getValue() << ";" << std::endl; std::cout << STDOUT_COMPUTE << "buffer search step: " << step << ";" << std::endl; }
     if (arg_verbose.getValue() >= VERBOSE_STANDARD) { std::cout << SEPARATOR_41 << std::endl; std::cout << "*\t\t\t\t AUTO LENGTH \t\t\t*" << std::endl; std::cout << SEPARATOR_41 << std::endl; }
 
     while (true)
     {
         if (cur_buffer_length > arg_init_buffer_length.getValue())
         {
-            buffer = analyze(arg_csv_file.getValue(), arg_bit_rate.getValue(), cur_buffer_length,
-                             arg_init_buffer_length.getValue(), arg_fps.getValue(), arg_unit.getValue(),
+            buffer = analyze(arg_csv_file.getValue(), bit_rate, cur_buffer_length,
+                             arg_init_buffer_length.getValue(), arg_fps.getValue(), "b",
                              "", "", VERBOSE_NONE);
 
             step = ceil(step * arg_learning_rate.getValue());
@@ -111,8 +122,8 @@ int main(int argc, char** argv)
 
     if (arg_verbose.getValue() >= VERBOSE_STANDARD)
     {
-        std::cout << STDOUT_COMPUTE << "minimal buffer length: " << cur_buffer_length << ";" << std::endl;
-        std::cout << STDOUT_COMPUTE << "initial buffer length: " << arg_init_buffer_length.getValue() << ";" << std::endl;
+        std::cout << STDOUT_COMPUTE << "minimal buffer length: " << cur_buffer_length << " (bits);" << std::endl;
+        std::cout << STDOUT_COMPUTE << "initial buffer length: " << arg_init_buffer_length.getValue() << " (bits);" << std::endl;
         std::cout << STDOUT_COMPUTE << "iterations: " << iter_count << ";" << std::endl;
     }
     if (arg_verbose.getValue() == VERBOSE_MINIMAL)
@@ -122,11 +133,11 @@ int main(int argc, char** argv)
 
     // output the final results
     analyze(arg_csv_file.getValue(),
-            arg_bit_rate.getValue(),
+            bit_rate,
             cur_buffer_length,
             arg_init_buffer_length.getValue(),
             arg_fps.getValue(),
-            arg_unit.getValue(),
+            "b",
             arg_generate_csv.getValue(),
             arg_generate_plot.getValue(),
             arg_verbose.getValue()

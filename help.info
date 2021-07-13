@@ -1,0 +1,71 @@
+
+USAGE: 
+
+   manual_buffer_size-linux_amd64  [-h] [--version] [-c <std::string>] [-f
+                                   <int>] [-i <int>] [-p <std::string>] [-u
+                                   <std::string>] [-v <int>] csv_file
+                                   bit_rate buffer_length
+
+
+Where: 
+
+   -i <int>,  --initial_buffer_occupation <int>
+     Number of bits required to start outputing data to the network. If not
+     specified then it's 0.5*buffer_length. (defined -u)
+
+   -f <int>,  --frame_rate <int>
+     If passed then the FPS read from the csv_file is ignored! (frames/sec)
+
+   -u <std::string>,  --unit <std::string>
+     The unit of the bits based fields [bit_rate, buffer_length &
+     initial_buffer_occupation]. Possible options are: b, kb, Mb, Gb, B, kB,
+     MB, GB. Default to b.
+
+   -c <std::string>,  --generate_csv <std::string>
+     If passed a csv file containing some statistics will be generated with
+     the name provided.
+
+   -p <std::string>,  --generate_plot <std::string>
+     If passed a plot with some statistics will be generated with the name
+     provided.
+
+   -v <int>,  --verbose <int>
+     Sets the verbose level. Values are: 0 - No output; 1 - Minimal output;
+     2 - Standard output; 3 - Extra output; 4 - All output. Defaults to 2
+
+   --,  --ignore_rest
+     Ignores the rest of the labeled arguments following this flag.
+
+   --version
+     Displays version information and exits.
+
+   -h,  --help
+     Displays usage information and exits.
+
+   csv_file <std::string>
+     (required) Path to CSV file. The expected CSV structure is:
+     <FPS>,0
+     <BYTES>,<PSNR>
+      ... 
+     <BYTES>,<PSNR>
+      where, FPS: frames/seg; BYTES: bytes; PSNR: dB. (path)
+
+   bit_rate <double>
+     (required) Bit-rate of the network. ((defined -u)/s)
+
+   buffer_length <double>
+     (required) Buffer length or size. (defined -u)
+
+   ========================================             
+                _______________
+   frames (in) |   buffer      |  bit-rate (out)
+          --->>|<--  length -->|--->>
+               |_______________|
+   
+   Required inputs:            
+    - frames:          provided by a csv input file;
+    - bit-rate:        user input as parameter;
+    - buffer length:   user input as parameter;
+   
+   Buffer Bit-Rate Tool by github.com/pinxau1000
+
