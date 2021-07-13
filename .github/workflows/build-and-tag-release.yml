@@ -46,31 +46,31 @@ jobs:
       run: ctest -C ${{env.BUILD_TYPE}}
 
       # Below a refactor is needed! (Not looking good)
-    - name: Upload Files to a GitHub Release (Ubuntu)
+    - name: Upload Manual Buffer Size to a GitHub Release (Ubuntu)
       if: ${{ matrix.platform == 'ubuntu-latest' }}
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: build/manual_buffer_size-linux_amd64
+        file: build/manual_buffer_size
         asset_name: manual_buffer_size-linux_amd64
         tag: latest
         overwrite: true
         prerelease: true
         body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
 
-    - name: Upload Files to a GitHub Release (Ubuntu)
+    - name: Upload Auto Buffer Size to a GitHub Release (Ubuntu)
       if: ${{ matrix.platform == 'ubuntu-latest' }}
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: build/auto_buffer_size-linux_amd64
+        file: build/auto_buffer_size
         asset_name: auto_buffer_size-linux_amd64
         tag: latest
         overwrite: true
         prerelease: true
         body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
 
-    - name: Upload Files to a GitHub Release (Windows)
+    - name: Upload Manual Buffer Size to a GitHub Release (Windows)
       if: ${{ matrix.platform == 'windows-latest' }}
       uses: svenstaro/upload-release-action@2.2.1
       with:
@@ -82,7 +82,7 @@ jobs:
         prerelease: true
         body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
 
-    - name: Upload Files to a GitHub Release (Windows)
+    - name: Upload Auto Buffer Size to a GitHub Release (Windows)
       if: ${{ matrix.platform == 'windows-latest' }}
       uses: svenstaro/upload-release-action@2.2.1
       with:
