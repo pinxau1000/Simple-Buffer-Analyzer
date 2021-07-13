@@ -8,6 +8,8 @@
 #include "include/Analyzer.hpp"
 #include "include/tclap/CmdLine.h"
 
+// Analysis tool
+
 int main(int argc, char** argv)
 {
     // Parse Args

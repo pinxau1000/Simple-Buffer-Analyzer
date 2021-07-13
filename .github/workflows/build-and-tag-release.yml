@@ -53,9 +53,9 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build/manual_buffer_size
         asset_name: manual_buffer_size-linux_amd64
-        tag: latest
+        tag: ${{ github.ref }}
         overwrite: true
-        prerelease: true
+        prerelease: false
         body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
 
     - name: Upload Auto Buffer Size to a GitHub Release (Ubuntu)
@@ -65,9 +65,9 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build/auto_buffer_size
         asset_name: auto_buffer_size-linux_amd64
-        tag: latest
+        tag: ${{ github.ref }}
         overwrite: true
-        prerelease: true
+        prerelease: false
         body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
 
     - name: Upload Manual Buffer Size to a GitHub Release (Windows)
@@ -77,9 +77,9 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build\${{ env.BUILD_TYPE }}\manual_buffer_size.exe
         asset_name: manual_buffer_size-windows_amd64.exe
-        tag: latest
+        tag: ${{ github.ref }}
         overwrite: true
-        prerelease: true
+        prerelease: false
         body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
 
     - name: Upload Auto Buffer Size to a GitHub Release (Windows)
@@ -89,7 +89,7 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: build\${{ env.BUILD_TYPE }}\auto_buffer_size.exe
         asset_name: auto_buffer_size-windows_amd64.exe
-        tag: latest
+        tag: ${{ github.ref }}
         overwrite: true
-        prerelease: true
+        prerelease: false
         body: "${{ env.BUILD_TYPE }} for ${{ matrix.platform }}"
