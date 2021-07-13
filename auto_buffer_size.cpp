@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     }
 
     std::default_random_engine generator;
-    std::uniform_int_distribution<char> distribution_step(0, 1);
+    std::uniform_int_distribution<int> distribution_step(0, 1);
 
     long long int cur_buffer_length = arg_buffer_seed.getValue();
     if (arg_buffer_seed.getValue() < arg_init_buffer_length.getValue())
