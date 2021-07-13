@@ -3,7 +3,7 @@
 // Example:
 // compute	| buffer occupation: 10976/400000 - in/out: 10976/0 - last/state: init/init;
 #ifndef VERSION
-#define VERSION "0.4.0"
+#define VERSION "0.4.1"
 #endif
 
 #ifndef STDERR_ERROR
