@@ -21,8 +21,8 @@ private:
     double _duration = 0;               //total time of the bitstream (s)
     unsigned long long int _bits = 0;   //total of bits of the bitstream
     double _psnr = 0;                   //total of psnr of bitstream
-    long long int _min_bits = LONG_LONG_MAX;    //bits of the frame with lower bits
-    long long int _max_bits = LONG_LONG_MIN;    //bits of the frame with higher bits
+    long long int _min_bits = LLONG_MAX;    //bits of the frame with lower bits
+    long long int _max_bits = LLONG_MIN;    //bits of the frame with higher bits
     int _verbose = VERBOSE_STANDARD;
     void set_frames(int frames);
     void set_duration(double duration);

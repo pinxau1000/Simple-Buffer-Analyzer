@@ -1,7 +1,5 @@
 #include <iostream>
 #include <string>
-#include <climits>
-#include <limits.h> // Needed for windows compilation
 #include "include/Definitions.hpp"
 #include "include/Analyzer.hpp"
 #include "include/tclap/CmdLine.h"
