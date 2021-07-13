@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cmath>
 #include <climits>
+#include <limits.h> // Needed for windows compilation
 #include "Definitions.hpp"
 #include "Frame.hpp"
 

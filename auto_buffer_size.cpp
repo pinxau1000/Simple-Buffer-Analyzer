@@ -2,6 +2,7 @@
 #include <string>
 #include <cmath>
 #include <random>
+#include <limits.h> // Needed for windows compilation
 #include "include/Buffer.hpp"
 #include "include/Definitions.hpp"
 #include "include/Analyzer.hpp"
